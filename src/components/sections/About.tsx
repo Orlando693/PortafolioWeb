@@ -1,163 +1,115 @@
-"use client";
+"use client"
 
-import Container from "../../components/ui/Container";
-import { motion } from "framer-motion";
-import { GraduationCap, MapPin, Briefcase } from "lucide-react";
+import Container from "../../components/ui/Container"
+import { motion } from "framer-motion"
 
 export default function About() {
   return (
     <section
       id="acerca"
-      className="relative bg-black min-h-[100dvh] snap-start scroll-mt-[120px] pt-24 pb-16"
+      className="relative bg-black min-h-[100dvh] snap-start scroll-mt-[120px] pt-24 pb-24"
     >
+      {/* ✅ SOLO degradé negro suave */}
+      <div className="pointer-events-none absolute inset-x-0 -top-12 h-28 bg-gradient-to-b from-black/0 to-black" />
+
       <Container>
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
           {/* LEFT */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
             transition={{ duration: 0.35 }}
-            className="lg:col-span-5"
+            className="lg:col-span-4"
           >
             <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
               Acerca de mí
             </div>
 
-            <h2 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl">
-              Trabajo en{" "}
-              <span className="text-white/60">interfaces</span> que se sienten{" "}
-              rápidas y modernas.
+            <h2 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+              Trabajo en <span className="text-white/55">interfaces</span> que se sienten rápidas y modernas.
             </h2>
 
-            <p className="mt-6 text-base leading-relaxed text-white/70 sm:text-lg">
-              Soy Orlando, estudiante de Ingeniería en Sistemas y desarrollador web.
-              Me enfoco en UI clara, consistencia visual y componentes reutilizables.
-              Me gusta aprender tecnologías nuevas y convertir ideas en proyectos reales.
+            <p className="mt-6 max-w-[48ch] text-base leading-relaxed text-white/70 sm:text-lg">
+              Soy Orlando, estudiante de Ingeniería en Sistemas y desarrollador web. Me enfoco en UI clara, consistencia
+              visual y componentes reutilizables. Me gusta aprender tecnologías nuevas y convertir ideas en proyectos
+              reales.
             </p>
-
-            {/* ✅ Antes estaban en columna (y cortaba). Ahora en GRID horizontal */}
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              <FactPill
-                icon={GraduationCap}
-                title="8vo semestre"
-                subtitle="En curso"
-              />
-              <FactPill
-                icon={Briefcase}
-                title="Prácticas / Jr"
-                subtitle="Disponible"
-              />
-              <FactPill icon={MapPin} title="Santa Cruz" subtitle="Bolivia" />
-            </div>
           </motion.div>
 
           {/* RIGHT */}
-          <div className="lg:col-span-7 grid gap-6 sm:grid-cols-2">
-            <BentoCard
-              className="sm:col-span-2"
-              title="Qué hago"
-              text="Construyo interfaces modernas con foco en claridad visual, buena estructura y detalles que elevan la experiencia."
-              bullets={[
-                "Componentes reutilizables",
-                "UI consistente y limpia",
-                "Animaciones sutiles (sin exceso)",
-              ]}
-            />
+          <div className="lg:col-span-7">
+            {/* ✅ grandes: se apilan y recién en 2xl se ponen 2 columnas */}
+            <div className="grid gap-8 2xl:grid-cols-2">
+              <AboutCardNeutral
+                kicker="Enfoque"
+                title="Qué hago"
+                desc="Construyo interfaces modernas con claridad visual, buena estructura y detalles que elevan la experiencia."
+                bullets={["Componentes reutilizables", "UI consistente y limpia", "Animaciones sutiles (sin exceso)"]}
+              />
 
-            <BentoCard
-              title="Cómo trabajo"
-              text='Orden y consistencia antes que “efectos por efecto”. Micro-interacciones rápidas y coherentes.'
-              bullets={[
-                "Diseño + implementación",
-                "Performance y accesibilidad",
-                "Git y buenas prácticas",
-              ]}
-            />
+              <AboutCardNeutral
+                kicker="Método"
+                title="Cómo trabajo"
+                desc='Orden y consistencia antes que "efectos por efecto". Micro-interacciones rápidas y coherentes.'
+                bullets={["Diseño + implementación", "Performance y accesibilidad", "Git y buenas prácticas"]}
+              />
+            </div>
 
-            <BentoCard
-              title="En qué estoy hoy"
-              text="Proyectos reales con repos públicos para demostrar tecnologías y progreso."
-              bullets={[
-                "Portafolio (Next + Tailwind)",
-                "Repos públicos en GitHub",
-                "Mejora continua",
-              ]}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.35, delay: 0.05 }}
+              className="mt-7 rounded-3xl border border-white/10 bg-white/5 px-6 py-5"
+            >
+              <p className="text-sm text-white/70">
+                Repos públicos en GitHub para comprobar mi trabajo, con proyectos reales y avances constantes.
+              </p>
+            </motion.div>
           </div>
         </div>
       </Container>
     </section>
-  );
+  )
 }
 
-/* ---------- UI ---------- */
+/* ---------- UI (Cards) ---------- */
 
-function FactPill({
-  icon: Icon,
+function AboutCardNeutral({
+  kicker,
   title,
-  subtitle,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/30">
-          <Icon className="h-5 w-5 text-white/80" />
-        </div>
-        <div className="leading-tight">
-          <p className="text-sm font-semibold text-white">{title}</p>
-          <p className="text-sm text-white/60">{subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BentoCard({
-  title,
-  text,
+  desc,
   bullets,
-  className = "",
 }: {
-  title: string;
-  text: string;
-  bullets: string[];
-  className?: string;
+  kicker: string
+  title: string
+  desc: string
+  bullets: string[]
 }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 14 }}
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-120px" }}
-      transition={{ duration: 0.35 }}
-      whileHover={{ y: -4 }}
-      className={[
-        "group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-7",
-        "hover:border-white/20 hover:bg-white/10 transition",
-        className,
-      ].join(" ")}
+      transition={{ duration: 0.28 }}
+      whileHover={{ y: -6 }}
+      className="rounded-3xl border border-black/10 bg-white p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-10"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-        <div className="absolute -left-24 -top-24 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
-      </div>
+      <p className="text-xs font-semibold tracking-widest uppercase text-black">{kicker}</p>
 
-      <div className="relative">
-        <h3 className="text-lg font-bold text-white">{title}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-white/70">{text}</p>
+      <h3 className="mt-3 text-2xl font-extrabold tracking-tight text-black sm:text-3xl">{title}</h3>
 
-        <ul className="mt-5 space-y-2 text-sm text-white/75">
-          {bullets.map((b) => (
-            <li key={b} className="flex items-start gap-2">
-              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-white/60" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </motion.article>
-  );
+      <p className="mt-4 text-base leading-relaxed text-black sm:text-lg">{desc}</p>
+
+      <ul className="mt-6 space-y-3">
+        {bullets.map((b) => (
+          <li key={b} className="flex items-start gap-3 text-black">
+            <span className="mt-[9px] h-2 w-2 shrink-0 rounded-full bg-black" />
+            <span className="text-[15px] leading-relaxed sm:text-base">{b}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  )
 }
