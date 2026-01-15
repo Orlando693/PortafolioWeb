@@ -5,6 +5,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { Download, Mail } from "lucide-react"
 import { TypeAnimation } from "react-type-animation"
+import { section } from "framer-motion/client"
 
 export default function Hero() {
   return (
@@ -18,9 +19,9 @@ export default function Hero() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 sm:h-48 md:h-56 bg-gradient-to-b from-transparent via-black/70 to-black" />
 
       <Container>
-        <div className="relative grid items-center gap-8 sm:gap-10 lg:grid-cols-2">
+        <div className="relative flex flex-col-reverse gap-10 lg:grid lg:grid-cols-2 lg:gap-14 lg:items-center text-center lg:text-left">
           {/* Left */}
-          <div>
+          <div className="flex flex-col items-center lg:items-start">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -34,16 +35,16 @@ export default function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className="mt-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white"
+              className="mt-6 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1]"
             >
-              Hola, soy <span className="text-white/60">Orlando</span>
+              Hola, soy <span className="text-white/60 inline-block">Orlando</span>
             </motion.h1>
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.08 }}
-              className="mt-3 min-h-[28px] text-base sm:text-lg font-semibold text-white/70"
+              className="mt-4 min-h-[56px] sm:min-h-[28px] text-base sm:text-lg font-semibold text-white/70"
             >
               <TypeAnimation
                 sequence={[
@@ -122,22 +123,41 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Right */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.05 }}
-            className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none"
+            className="lg:hidden mx-auto mt-4 w-full max-w-[260px] sm:max-w-xs"
           >
-            <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
-              <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black">
+              <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-3 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
+                <div className="relative overflow-hidden rounded-[1.4rem] border border-white/10 bg-black aspect-square">
+                  <Image
+                    src="/Perfil1.jpg"
+                    alt="Foto de Orlando"
+                    width={500}
+                    height={500}
+                    priority
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.05 }}
+            className="hidden lg:block mx-auto w-full max-w-md lg:max-w-none"
+          >
+            <div className="relative rounded-[2.5rem] border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-black">
                 <Image
                   src="/Perfil1.jpg"
                   alt="Foto de Orlando"
                   width={900}
                   height={900}
                   priority
-                  className="h-[300px] sm:h-[380px] lg:h-[420px] w-full object-cover"
+                  className="h-[380px] lg:h-[480px] w-full object-cover"
                 />
               </div>
             </div>

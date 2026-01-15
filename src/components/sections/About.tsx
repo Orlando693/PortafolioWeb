@@ -26,7 +26,7 @@ export default function About() {
               Acerca de mí
             </div>
 
-            <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.05] tracking-tight text-white lg:text-[56px]">
+            <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white lg:text-[56px]">
               Trabajo en <span className="text-white/55">interfaces</span> que se sienten rápidas y modernas.
             </h2>
 
@@ -93,7 +93,7 @@ function AboutCardNeutral({
       viewport={{ once: true, margin: "-120px" }}
       transition={{ duration: 0.28 }}
       whileHover={{ y: -6 }}
-      className="rounded-2xl sm:rounded-3xl border border-black/10 bg-white p-5 sm:p-8 lg:p-10 shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
+      className="rounded-2xl sm:rounded-3xl border border-black/10 bg-white p-5 sm:p-8 lg:p-10 shadow-[0_20px_40px_rgba(0,0,0,0.2)] sm:shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
     >
       <p className="text-xs font-semibold tracking-widest uppercase text-black">{kicker}</p>
 

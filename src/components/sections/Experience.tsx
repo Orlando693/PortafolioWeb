@@ -38,7 +38,7 @@ export default function Experience() {
             Experiencia & Logros
           </div>
 
-          <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.05] tracking-tight text-white lg:text-[56px]">
+          <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white lg:text-[56px]">
             Trayectoria académica y <span className="text-white/55">proyectos personales</span>
           </h2>
 
@@ -58,9 +58,9 @@ export default function Experience() {
 
             <div className="mt-6 relative pl-6 sm:pl-8">
               {/* Línea vertical */}
-              <div className="absolute left-2 sm:left-3 top-2 h-full w-px bg-white/10" />
+              <div className="absolute left-2.5 sm:left-3 top-2 bottom-6 w-px bg-white/10" />
 
-              <div className="grid gap-4 sm:gap-6">
+              <div className="grid gap-6 sm:gap-6">
                 {experience.map((e, idx) => (
                   <motion.div
                     key={`${e.role}-${idx}`}

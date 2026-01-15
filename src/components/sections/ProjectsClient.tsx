@@ -66,7 +66,7 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
 
   return (
     <Container>
-      <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
+      <div className="grid gap-8 sm:gap-14 lg:grid-cols-12 lg:items-start">
         {/* LEFT */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
@@ -79,7 +79,7 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
             Mis proyectos
           </div>
 
-          <h2 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+          <h2 className="mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white lg:text-[56px]">
             Proyectos en <span className="text-white/55">código abierto</span>
           </h2>
 
@@ -96,17 +96,17 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
           {/* ✅ Panel compacto (evita que la página crezca infinito) */}
           <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
             {/* Header (filtros) */}
-            <div className="border-b border-white/10 bg-black/20 px-5 py-5 sm:px-7">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="border-b border-white/10 bg-black/20 p-4 sm:px-7 sm:py-5">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                 {/* Search */}
-                <div className="relative w-full sm:max-w-md">
+                <div className="relative w-full lg:max-w-md">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
                   <input
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
-                    placeholder="Buscar por nombre o descripción..."
+                    placeholder="Buscar..."
                     autoComplete="off"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-10 text-white outline-none placeholder:text-white/40 focus:border-white/25"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-10 text-sm sm:text-base text-white outline-none placeholder:text-white/40 focus:border-white/25"
                   />
 
                   {q.trim().length > 0 && (
@@ -123,12 +123,12 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
                 </div>
 
                 {/* Language */}
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-white/70">Lenguaje:</span>
+                <div className="flex items-center justify-between gap-3 lg:justify-start">
+                  <span className="text-sm text-white/70 whitespace-nowrap">Lenguaje:</span>
                   <select
                     value={lang}
                     onChange={(e) => setLang(e.target.value)}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/25"
+                    className="w-full lg:w-auto rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/25"
                   >
                     {languages.map((l) => (
                       <option key={l} value={l} className="bg-zinc-900">

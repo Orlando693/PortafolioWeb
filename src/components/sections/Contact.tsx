@@ -34,7 +34,7 @@ export default function Contact() {
               Contacto
             </div>
 
-            <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.05] tracking-tight text-white">
+            <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white">
               Hablemos sobre tu próximo <span className="text-white/55">proyecto</span>.
             </h2>
 

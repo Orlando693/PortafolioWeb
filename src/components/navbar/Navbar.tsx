@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useMemo, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { Home, User, Wrench, FolderGit2, Mail, Briefcase } from "lucide-react"
@@ -23,173 +22,135 @@ const NAV: NavItem[] = [
 
 export default function Navbar() {
   const [active, setActive] = useState<string>("inicio")
-  const activeRef = useRef(active)
   const [elevated, setElevated] = useState(false)
-  const scrollLock = useRef(false)
-  const scrollReleaseRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    activeRef.current = active
-  }, [active])
+  
+  // Refs para controlar el estado sin re-renderizados innecesarios
+  const isScrollingRef = useRef(false)
+  const scrollTimeoutRef = useRef<number | null>(null)
+  const lastScrollTimeRef = useRef(0)
 
   const ids = useMemo(() => NAV.map((n) => n.id), [])
 
+  // Controlar elevación del navbar (sombra)
   useEffect(() => {
     const onScroll = () => setElevated(window.scrollY > 8)
-    onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  useEffect(() => {
-    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[]
+  // Función para encontrar la sección más visible actualmente
+  const getActiveSection = () => {
+    let current = ids[0]
+    let bestScore = Number.NEGATIVE_INFINITY
+    const viewportHeight = window.innerHeight
+    const viewportCenter = viewportHeight / 2
 
-    if (!sections.length) return
+    for (const id of ids) {
+      const el = document.getElementById(id)
+      if (!el) continue
 
-    const setFromHash = () => {
-      const raw = window.location.hash.replace("#", "")
-      const id = decodeURIComponent(raw)
-      if (id && ids.includes(id)) setActive(id)
-    }
+      const rect = el.getBoundingClientRect()
+      
+      // Calculamos qué tan cerca está el centro del elemento del centro del viewport
+      const elementCenter = rect.top + rect.height / 2
+      const distanceToCenter = Math.abs(viewportCenter - elementCenter)
+      
+      // Score: mientras menor distancia, mayor score (usamos negativo para maximizar)
+      const score = -distanceToCenter
 
-    let ticking = false
-    const updateByScroll = () => {
-      ticking = false
-
-      let current = sections[0]?.id ?? "inicio"
-      let best = Number.NEGATIVE_INFINITY
-
-      for (const el of sections) {
-        const rect = el.getBoundingClientRect()
-        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
-        const score = visibleHeight - Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2)
-        
-        if (score > best) {
-          best = score
-          current = el.id
-        }
-      }
-
-      setActive(current)
-    }
-
-    const onScroll = () => {
-      if (!ticking) {
-        ticking = true
-        requestAnimationFrame(updateByScroll)
+      if (score > bestScore) {
+        bestScore = score
+        current = id
       }
     }
+    return current
+  }
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0]
-
-        if (visible?.target?.id) setActive(visible.target.id)
-      },
-      {
-        root: null,
-        rootMargin: "-45% 0px -45% 0px",
-        threshold: [0.4, 0.6, 0.8],
-      },
-    )
-
-    sections.forEach((el) => io.observe(el))
-
-    setFromHash()
-    updateByScroll()
-
-    window.addEventListener("hashchange", setFromHash)
-    window.addEventListener("scroll", onScroll, { passive: true })
-
-    return () => {
-      io.disconnect()
-      window.removeEventListener("hashchange", setFromHash)
-      window.removeEventListener("scroll", onScroll)
-    }
-  }, [ids])
-
-  useEffect(() => {
-    const scrollTimeout: number | null = null
-
-    const onWheel = (e: WheelEvent) => {
-      // Bloquear scroll lateral o zoom con Ctrl
-      if (e.ctrlKey) return
-
-      // Si estamos bloqueados (animando), salimos
-      if (scrollLock.current) return
-
-      // Detectar pequeña intención de scroll para evitar disparos accidentales
-      if (Math.abs(e.deltaY) < 15) return
-
-      e.preventDefault()
-
-      // Determinar dirección
-      const dir = e.deltaY > 0 ? 1 : -1
-
-      // Calcular la sección activa VISUALMENTE
-      let currentIndex = 0
-      let minDistance = Number.MAX_VALUE
-      const viewportCenter = window.innerHeight / 2
-
-      // Buscar qué sección está más cerca del centro de la pantalla
-      const currentSections = ids.map((id) => document.getElementById(id))
-      currentSections.forEach((el, idx) => {
-        if (!el) return
-        const rect = el.getBoundingClientRect()
-        // Centro de la sección relativo al viewport
-        const elementCenter = rect.top + rect.height / 2
-        // Distancia absoluta al centro del viewport
-        const distance = Math.abs(elementCenter - viewportCenter)
-
-        if (distance < minDistance) {
-          minDistance = distance
-          currentIndex = idx
-        }
-      })
-
-      // Calcular siguiente índice
-      const nextIndex = Math.min(Math.max(currentIndex + dir, 0), ids.length - 1)
-
-      // Si el índice cambia, ejecutamos el scroll
-      if (nextIndex !== currentIndex) {
-        scrollLock.current = true
-        const targetId = ids[nextIndex]
-
-        scrollToSection(targetId)
-
-        // Bloqueo temporal para permitir que termine la animación
-        if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)
-        scrollReleaseRef.current = window.setTimeout(() => {
-          scrollLock.current = false
-        }, 800)
-      }
-    }
-
-    // Usar passive: false es CRÍTICO para poder usar preventDefault
-    window.addEventListener("wheel", onWheel, { passive: false })
-
-    return () => {
-      window.removeEventListener("wheel", onWheel as EventListener)
-      if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)
-      if (scrollTimeout) window.clearTimeout(scrollTimeout)
-    }
-  }, [ids])
-
-  const activeIndex = Math.max(
-    0,
-    NAV.findIndex((n) => n.id === active),
-  )
-
-  function scrollToSection(id: string) {
+  // Scroll suave a una sección
+  const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
     if (!el) return
 
+    // Bloqueamos detección de scroll mientras animamos
+    isScrollingRef.current = true
     setActive(id)
-    history.replaceState(null, "", `#${id}`)
+    
     el.scrollIntoView({ behavior: "smooth", block: "center" })
+
+    // Desbloquear después de un tiempo prudente
+    if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current)
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      isScrollingRef.current = false
+    }, 1000)
   }
+
+  // Effect para manejar el scroll manual (barra de scroll)
+  useEffect(() => {
+    let ticking = false
+
+    const onScroll = () => {
+      if (isScrollingRef.current) return
+      
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const current = getActiveSection()
+          if (current) setActive(current)
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [ids])
+
+  // Effect CRÍTICO para el comportamiento "Snap" con la rueda
+  useEffect(() => {
+    const onWheel = (e: WheelEvent) => {
+      // Ignorar zoom o scroll horizontal
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
+
+      // PREVENIR SIEMPRE el scroll nativo para tener control total
+      e.preventDefault()
+
+      // Debounce por tiempo: si acabamos de hacer scroll, ignorar
+      const now = Date.now()
+      if (now - lastScrollTimeRef.current < 800) return
+      if (isScrollingRef.current) return
+
+      // Umbral mínimo de movimiento para evitar disparos accidentales
+      if (Math.abs(e.deltaY) < 10) return
+
+      // Determinar dirección
+      const direction = e.deltaY > 0 ? 1 : -1
+      
+      // Calcular dónde estamos basados en lo que SE VE, no en el estado
+      const currentVisibleId = getActiveSection()
+      const currentIndex = ids.indexOf(currentVisibleId)
+      
+      if (currentIndex === -1) return
+
+      // Calcular siguiente índice
+      const nextIndex = Math.min(Math.max(currentIndex + direction, 0), ids.length - 1)
+
+      // Si hay cambio, movernos
+      if (nextIndex !== currentIndex) {
+        lastScrollTimeRef.current = now
+        scrollToSection(ids[nextIndex])
+      }
+    }
+
+    // passive: false es obligatorio para e.preventDefault()
+    window.addEventListener("wheel", onWheel, { passive: false })
+    
+    return () => {
+      window.removeEventListener("wheel", onWheel as EventListener)
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current)
+    }
+  }, [ids])
+
+  const activeIndex = Math.max(0, ids.indexOf(active))
 
   return (
     <div className="fixed left-0 right-0 top-3 z-50 flex justify-center px-3">

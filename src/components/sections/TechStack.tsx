@@ -88,7 +88,7 @@ export default function TechStack() {
 
       <Container>
         {/* ✅ grid mejor repartido para que NO se encime */}
-        <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-10 sm:gap-14 lg:grid-cols-12 lg:items-start">
           {/* LEFT */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -101,7 +101,7 @@ export default function TechStack() {
               Habilidades técnicas
             </div>
 
-            <h2 className="mt-6 max-w-[18ch] text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+            <h2 className="mt-6 max-w-[18ch] text-3xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-[56px]">
               Herramientas que <span className="text-white/55">domino</span>
             </h2>
 
@@ -163,7 +163,7 @@ export default function TechStack() {
                     className="overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
                   >
                     {/* Header del panel */}
-                    <div className="border-b border-black/10 px-8 py-7 sm:px-10">
+                    <div className="border-b border-black/10 px-6 py-6 sm:px-10 sm:py-7">
                       <p className="text-xs font-semibold tracking-widest uppercase text-black">
                         {active === "Todos" ? "Todas mis habilidades" : active}
                       </p>
