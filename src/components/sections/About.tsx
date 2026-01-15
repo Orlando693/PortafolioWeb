@@ -31,7 +31,7 @@ export default function About() {
             </h2>
 
             <p className="mt-6 max-w-[48ch] text-base leading-relaxed text-white/70 sm:text-lg">
-              Soy Orlando, estudiante de Ingeniería en Sistemas y desarrollador web. Me enfoco en UI clara, consistencia
+              Soy Orlando, estudiante de Ingeniería en Informática y desarrollador web. Me enfoco en UI clara, consistencia
               visual y componentes reutilizables. Me gusta aprender tecnologías nuevas y convertir ideas en proyectos
               reales.
             </p>

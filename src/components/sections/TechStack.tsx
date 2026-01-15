@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import Container from "../../components/ui/Container";
-import { motion, AnimatePresence } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
-import { Braces, Database, Server, Sparkles, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import Container from "../../components/ui/Container"
+import { AnimatePresence, motion } from "framer-motion"
+import { useMemo, useRef, useState } from "react"
+import { Braces, Database, Server, Sparkles, CheckCircle2 } from "lucide-react"
 
-type Level = "Básico" | "Intermedio" | "Avanzado";
+type Level = "Básico" | "Intermedio" | "Avanzado"
 
 type Skill = {
-  name: string;
-  level: Level;
-  category: "Frontend" | "Backend" | "DB & Tools";
-  proof?: string;
-  iconKey: string; // 
-};
+  name: string
+  level: Level
+  category: "Frontend" | "Backend" | "DB & Tools"
+  proof?: string
+  iconKey: string
+}
 
 const SKILLS: Skill[] = [
   // Frontend
@@ -32,167 +32,228 @@ const SKILLS: Skill[] = [
 
   // DB & Tools
   { name: "PostgreSQL", level: "Intermedio", category: "DB & Tools", iconKey: "postgres" },
-  { name: "MySQL", level: "Intermedio", category: "DB & Tools", iconKey: "mysql" },
+  { name: "MySQL", level: "Avanzado", category: "DB & Tools", iconKey: "mysql" },
   { name: "Git", level: "Intermedio", category: "DB & Tools", iconKey: "git" },
   { name: "GitHub", level: "Intermedio", category: "DB & Tools", iconKey: "github" },
   { name: "C#", level: "Intermedio", category: "DB & Tools", iconKey: "cs" },
-];
+]
 
 const CATEGORIES = [
   { key: "Todos" as const, label: "Todos", icon: Sparkles },
   { key: "Frontend" as const, label: "Frontend", icon: Braces },
   { key: "Backend" as const, label: "Backend", icon: Server },
   { key: "DB & Tools" as const, label: "BD & Herramientas", icon: Database },
-];
+]
 
 function levelStyles(level: Level) {
-  if (level === "Avanzado") return "border-emerald-300/25 bg-emerald-400/15 text-emerald-200";
-  if (level === "Intermedio") return "border-sky-300/25 bg-sky-400/15 text-sky-200";
-  return "border-white/10 bg-white/5 text-white/70";
-}
-
-function cardGlow(level: Level) {
-  if (level === "Avanzado") return "from-emerald-400/25 via-transparent to-transparent";
-  if (level === "Intermedio") return "from-sky-400/25 via-transparent to-transparent";
-  return "from-white/10 via-transparent to-transparent";
+  // ✅ neutro (sin verde/azul)
+  if (level === "Avanzado") return "border-black/20 bg-black/10 text-black"
+  if (level === "Intermedio") return "border-black/15 bg-black/5 text-black/80"
+  return "border-black/10 bg-black/3 text-black/70"
 }
 
 function safePlay(audio: HTMLAudioElement | null) {
-  if (!audio) return;
+  if (!audio) return
   try {
-    // evita que se "apile" el sonido
-    audio.currentTime = 0;
-    void audio.play();
+    audio.currentTime = 0
+    void audio.play()
   } catch {
-    // si el navegador bloquea autoplay, no rompemos nada
+    // autoplay restrictions
   }
 }
 
 export default function TechStack() {
-  const [active, setActive] = useState<(typeof CATEGORIES)[number]["key"]>("Todos");
-
-  // ✅ audio hover
-  const hoverAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [active, setActive] = useState<(typeof CATEGORIES)[number]["key"]>("Todos")
+  const hoverAudioRef = useRef<HTMLAudioElement | null>(null)
 
   const filtered = useMemo(() => {
-    if (active === "Todos") return SKILLS;
-    return SKILLS.filter((s) => s.category === active);
-  }, [active]);
+    if (active === "Todos") return SKILLS
+    return SKILLS.filter((s) => s.category === active)
+  }, [active])
+
+  const stats = useMemo(() => {
+    return {
+      total: SKILLS.length,
+      avanzadas: SKILLS.filter((s) => s.level === "Avanzado").length,
+      intermedias: SKILLS.filter((s) => s.level === "Intermedio").length,
+      basicas: SKILLS.filter((s) => s.level === "Básico").length,
+    }
+  }, [])
 
   return (
-    <section id="habilidades" className="scroll-mt-28 py-16">
-      {/* ✅ audio (opcional) */}
+    <section id="habilidades" className="relative bg-black min-h-[100dvh] snap-start scroll-mt-[120px] pt-24 pb-24">
+      <div className="pointer-events-none absolute inset-x-0 -top-12 h-28 bg-gradient-to-b from-black/0 to-black" />
+
       <audio ref={hoverAudioRef} src="/sfx/hover.mp3" preload="auto" />
 
       <Container>
-        {/* Header */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-3xl font-bold tracking-tight text-white">Habilidades técnicas</h2>
-          <p className="max-w-2xl text-white/70">
-            Tecnologías que uso y mi nivel actual (lo podés ir actualizando a medida que avances).
-          </p>
-        </div>
+        {/* ✅ grid mejor repartido para que NO se encime */}
+        <div className="grid gap-14 lg:grid-cols-12 lg:items-start">
+          {/* LEFT */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-120px" }}
+            transition={{ duration: 0.35 }}
+            className="lg:col-span-5"
+          >
+            <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
+              Habilidades técnicas
+            </div>
 
-        {/* Tabs */}
-        <div className="mt-8 flex flex-wrap gap-2">
-          {CATEGORIES.map((c) => {
-            const Icon = c.icon;
-            const isActive = active === c.key;
-            return (
-              <button
-                key={c.key}
-                onClick={() => setActive(c.key)}
-                className={[
-                  "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
-                  isActive
-                    ? "border-white/25 bg-white/10 text-white"
-                    : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/10",
-                ].join(" ")}
-              >
-                <Icon className="h-4 w-4" />
-                {c.label}
-              </button>
-            );
-          })}
-        </div>
+            <h2 className="mt-6 max-w-[18ch] text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+              Herramientas que <span className="text-white/55">domino</span>
+            </h2>
 
-        {/* Grid */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((s) => (
-              <motion.article
-                key={s.name}
-                layout
-                initial={{ opacity: 0, y: 14, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                transition={{ duration: 0.25 }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                onMouseEnter={() => safePlay(hoverAudioRef.current)}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 hover:border-white/20 hover:bg-white/10"
-              >
-                {/* glow */}
-                <div
-                  className={[
-                    "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
-                    "bg-gradient-to-br",
-                    cardGlow(s.level),
-                  ].join(" ")}
-                />
+            <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-white/70 sm:text-lg">
+              Tecnologías y lenguajes que uso regularmente para construir aplicaciones robustas, desde frontend moderno
+              hasta backend escalable.
+            </p>
 
-                {/* ✅ icon + title */}
-                <div className="relative flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-                      <img
-                        alt={s.name}
-                        className="h-7 w-7"
-                        src={`https://skillicons.dev/icons?i=${s.iconKey}`}
-                      />
+            {/* ✅ stats siempre en 2 columnas desde sm para que se vea ordenado */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.35, delay: 0.05 }}
+              className="mt-8 grid grid-cols-2 gap-4"
+            >
+              
+            </motion.div>
+          </motion.div>
+
+          {/* RIGHT */}
+          <div className="lg:col-span-7 lg:col-start-6">
+            {/* ✅ sticky para que se vea pro y no “flote” raro */}
+            <div className="lg:sticky lg:top-28">
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map((c) => {
+                  const Icon = c.icon
+                  const isActive = active === c.key
+                  return (
+                    <motion.button
+                      key={c.key}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setActive(c.key)}
+                      className={[
+                        "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition",
+                        isActive
+                          ? "border-white/25 bg-white/10 text-white"
+                          : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/10",
+                      ].join(" ")}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {c.label}
+                    </motion.button>
+                  )
+                })}
+              </div>
+
+              {/* Panel */}
+              <div className="mt-6">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.22 }}
+                    className="overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
+                  >
+                    {/* Header del panel */}
+                    <div className="border-b border-black/10 px-8 py-7 sm:px-10">
+                      <p className="text-xs font-semibold tracking-widest uppercase text-black">
+                        {active === "Todos" ? "Todas mis habilidades" : active}
+                      </p>
+
+                      <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                        <h3 className="text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
+                          {active === "Todos" ? "Stack completo" : `Dominio ${active}`}
+                        </h3>
+
+                        <span className="w-fit rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs text-black/70">
+                          {filtered.length} {filtered.length === 1 ? "item" : "items"}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 text-sm leading-relaxed text-black/70">
+                        {active === "Todos"
+                          ? "Tecnologías organizadas por categoría. Los niveles representan experiencia práctica."
+                          : "Herramientas dentro de esta categoría. El nivel refleja experiencia práctica."}
+                      </p>
                     </div>
 
-                    <div className="min-w-0">
-                      <p className="truncate text-lg font-semibold text-white">{s.name}</p>
-                      <p className="mt-1 text-xs text-white/50">{s.category}</p>
+                   
+                    <div className="max-h-[56vh] overflow-auto px-6 py-6 sm:px-8">
+                      <div className="grid gap-3 sm:gap-4">
+                        {filtered.map((skill) => (
+                          <motion.div
+                            key={skill.name}
+                            layout
+                            onMouseEnter={() => safePlay(hoverAudioRef.current)}
+                            whileHover={{ x: 4 }}
+                            className="group flex items-center justify-between gap-4 rounded-2xl border border-black/5 bg-black/[0.03] p-4 transition-colors hover:bg-black/[0.06]"
+                          >
+                            <div className="flex min-w-0 items-center gap-3">
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/10 bg-black/5">
+                                <img
+                                  alt={skill.name}
+                                  className="h-6 w-6"
+                                  src={`https://skillicons.dev/icons?i=${skill.iconKey}`}
+                                />
+                              </div>
+
+                              <div className="min-w-0">
+                                <p className="truncate text-base font-semibold text-black">{skill.name}</p>
+                                <p className="text-xs text-black/50">{skill.category}</p>
+                              </div>
+                            </div>
+
+                            <span
+                              className={[
+                                "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-medium shrink-0",
+                                levelStyles(skill.level),
+                              ].join(" ")}
+                            >
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              {skill.level}
+                            </span>
+                          </motion.div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <span
-                    className={[
-                      "inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium",
-                      levelStyles(s.level),
-                    ].join(" ")}
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    {s.level}
-                  </span>
-                </div>
-
-                {/* ✅ sin barra de progreso */}
-                {s.proof ? (
-                  <a
-                    href={s.proof}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="relative mt-4 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white"
-                  >
-                    Ver evidencia <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                ) : (
-                  <p className="relative mt-4 text-sm text-white/50">
-                    (Podemos enlazar repos específicos como evidencia)
-                  </p>
-                )}
-
-                {/* línea sutil al hover */}
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </motion.article>
-            ))}
-          </AnimatePresence>
+                    {/* Footer mini (opcional) */}
+                    <div className="border-t border-black/10 bg-black/[0.02] px-8 py-4 text-xs text-black/60 sm:px-10">
+                      
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* ❌ Se quitó la banda inferior de iconos */}
       </Container>
     </section>
-  );
+  )
+}
+
+/* ---------- UI Components ---------- */
+
+function StatsCard({ label, value }: { label: string; value: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-120px" }}
+      transition={{ duration: 0.28 }}
+      whileHover={{ y: -4 }}
+      className="rounded-2xl border border-black/10 bg-white p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)] sm:p-7"
+    >
+      <p className="text-xs font-semibold tracking-widest uppercase text-black/60">{label}</p>
+      <p className="mt-2 text-3xl font-extrabold text-black">{value}</p>
+    </motion.div>
+  )
 }

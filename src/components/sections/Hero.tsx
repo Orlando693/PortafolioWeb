@@ -4,6 +4,7 @@ import Container from "../../components/ui/Container";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Download, Mail } from "lucide-react";
+import { TypeAnimation } from "react-type-animation";
 
 export default function Hero() {
   return (
@@ -13,11 +14,10 @@ export default function Hero() {
     >
       {/* Opaco/aurora SOLO en Hero */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.10),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(59,130,246,0.12),transparent_50%)]" />
+        
       </div>
 
-      {/* ✅ ESTE ES EL DEGRADÉ que mezcla con el negro del About */}
+      {/* ✅ Degradé que mezcla con el negro del About */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent via-black/70 to-black" />
 
       <Container>
@@ -41,6 +41,40 @@ export default function Hero() {
             >
               Hola, soy <span className="text-white/60">Orlando</span>
             </motion.h1>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.08 }}
+              className="mt-3 min-h-[28px] text-base font-semibold text-white/70 sm:text-lg"
+            >
+              <TypeAnimation
+                sequence={[
+                  "Siempre motivado a aprender y mejorar.",
+                  1700,
+                  "",
+                  350,
+                  "Construyo interfaces modernas, claras y rápidas.",
+                  1700,
+                  "",
+                  350,
+                  "Me enfoco en detalles, consistencia y buena UX.",
+                  1700,
+                  "",
+                  350,
+                  "Listo para aportar en proyectos reales y desafiantes.",
+                  1700,
+                  "",
+                  350,
+                ]}
+                speed={50}
+                deletionSpeed={70}
+                repeat={Infinity}
+                cursor
+                wrapper="span"
+                className="text-white/80"
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 12 }}
@@ -102,7 +136,7 @@ export default function Hero() {
             <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
               <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black">
                 <Image
-                  src="/Perfil.jpg"
+                  src="/Perfil1.jpg"
                   alt="Foto de Orlando"
                   width={900}
                   height={900}

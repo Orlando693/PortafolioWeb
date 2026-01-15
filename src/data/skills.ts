@@ -65,7 +65,7 @@ export const skills: Skill[] = [
 
   // DB & Tools
   { name: "PostgreSQL", icon: "postgres", level: "Intermedio", category: "DB & Tools" },
-  { name: "MySQL", icon: "mysql", level: "Intermedio", category: "DB & Tools" },
+  { name: "MySQL", icon: "mysql", level: "Avanzado", category: "DB & Tools" },
   { name: "Git", icon: "git", level: "Intermedio", category: "DB & Tools" },
   { name: "GitHub", icon: "github", level: "Intermedio", category: "DB & Tools" },
   { name: "C#", icon: "cs", level: "Intermedio", category: "DB & Tools" },

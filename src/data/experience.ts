@@ -26,29 +26,28 @@ export const experience: ExperienceItem[] = [
       "Maquetación responsiva con Tailwind CSS.",
       "Buenas prácticas: componentes reutilizables, estructura limpia.",
     ],
-    tech: ["React", "Next.js", "TypeScript", "Tailwind"],
+    tech: ["Next.js", "TypeScript", "Tailwind", "Git", "Nest.js", "PostgreSQL"],
   },
 ];
 
 // ✅ Certificados / logros (ejemplos). Cambialos por los tuyos.
 export const achievements: AchievementItem[] = [
   {
-    title: "Certificado React",
+    title: "Certificado HTML5",
     issuer: "Plataforma / Academia",
     date: "2025",
-    image: "/certs/react.png", // pon esta imagen en /public/certs/react.png
-    href: "https://tulink.com", // opcional
+    image: "/certs/Html.png", // pon esta imagen en /public/certs/html5.png, // opcional
   },
   {
-    title: "Certificado JavaScript",
-    issuer: "Plataforma / Academia",
-    date: "2025",
-    image: "/certs/javascript.png",
-  },
-  {
-    title: "Certificado CSS",
+    title: "Certificado Java",
     issuer: "Plataforma / Academia",
     date: "2024",
-    image: "/certs/css.png",
+    image: "/certs/Java.png",
+  },
+  {
+    title: "Certificado CSharp",
+    issuer: "Plataforma / Academia",
+    date: "2024",
+    image: "/certs/CSharp.png",
   },
 ];
