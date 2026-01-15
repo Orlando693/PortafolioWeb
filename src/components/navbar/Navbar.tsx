@@ -63,6 +63,7 @@ export default function Navbar() {
         const rect = el.getBoundingClientRect()
         const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
         const score = visibleHeight - Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2)
+        
         if (score > best) {
           best = score
           current = el.id
@@ -110,42 +111,38 @@ export default function Navbar() {
   }, [ids])
 
   useEffect(() => {
-    let scrollTimeout: number | null = null
+    const scrollTimeout: number | null = null
 
     const onWheel = (e: WheelEvent) => {
       // Bloquear scroll lateral o zoom con Ctrl
       if (e.ctrlKey) return
 
-      // Prevenir el comportamiento por defecto siempre
-      // Esto convierte el scroll en un disparador de eventos
-      e.preventDefault()
-
       // Si estamos bloqueados (animando), salimos
       if (scrollLock.current) return
 
       // Detectar pequeña intención de scroll para evitar disparos accidentales
-      // Sensibilidad ajustada
       if (Math.abs(e.deltaY) < 15) return
+
+      e.preventDefault()
 
       // Determinar dirección
       const dir = e.deltaY > 0 ? 1 : -1
 
-      // Calcular la sección activa VISUALMENTE 
-      // (no depender del estado React que puede tener lag)
+      // Calcular la sección activa VISUALMENTE
       let currentIndex = 0
       let minDistance = Number.MAX_VALUE
       const viewportCenter = window.innerHeight / 2
 
       // Buscar qué sección está más cerca del centro de la pantalla
-      const currentSections = ids.map(id => document.getElementById(id))
+      const currentSections = ids.map((id) => document.getElementById(id))
       currentSections.forEach((el, idx) => {
         if (!el) return
         const rect = el.getBoundingClientRect()
         // Centro de la sección relativo al viewport
-        const elementCenter = rect.top + (rect.height / 2)
+        const elementCenter = rect.top + rect.height / 2
         // Distancia absoluta al centro del viewport
         const distance = Math.abs(elementCenter - viewportCenter)
-        
+
         if (distance < minDistance) {
           minDistance = distance
           currentIndex = idx
@@ -159,20 +156,20 @@ export default function Navbar() {
       if (nextIndex !== currentIndex) {
         scrollLock.current = true
         const targetId = ids[nextIndex]
-        
+
         scrollToSection(targetId)
 
         // Bloqueo temporal para permitir que termine la animación
         if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)
         scrollReleaseRef.current = window.setTimeout(() => {
           scrollLock.current = false
-        }, 800) // 800ms de espera entre scrolls hace que se sienta responsive pero controlado
+        }, 800)
       }
     }
 
     // Usar passive: false es CRÍTICO para poder usar preventDefault
     window.addEventListener("wheel", onWheel, { passive: false })
-    
+
     return () => {
       window.removeEventListener("wheel", onWheel as EventListener)
       if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)

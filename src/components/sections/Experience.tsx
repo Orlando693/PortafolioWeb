@@ -1,6 +1,6 @@
 "use client"
 
-import Container from "../../components/ui/Container"
+import Container from "../ui/Container"
 import { experience, achievements, type AchievementItem } from "../../data/experience"
 import { AnimatePresence, motion } from "framer-motion"
 import { Award, Briefcase, ExternalLink, X } from "lucide-react"
@@ -9,7 +9,6 @@ import { useEffect, useMemo, useState } from "react"
 export default function Experience() {
   const [active, setActive] = useState<AchievementItem | null>(null)
 
-  // Cierra modal con ESC
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActive(null)
@@ -21,7 +20,10 @@ export default function Experience() {
   const hasAchievements = useMemo(() => achievements?.length > 0, [])
 
   return (
-    <section id="experiencia" className="relative bg-black min-h-[100dvh] snap-start scroll-mt-[120px] pt-24 pb-24">
+    <section
+      id="experiencia"
+      className="relative bg-black min-h-[100dvh] snap-start scroll-mt-[120px] pt-16 pb-16 sm:pt-24 sm:pb-24"
+    >
       <div className="pointer-events-none absolute inset-x-0 -top-12 h-28 bg-gradient-to-b from-black/0 to-black" />
 
       <Container>
@@ -32,33 +34,33 @@ export default function Experience() {
           transition={{ duration: 0.35 }}
           className="max-w-3xl"
         >
-          <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
+          <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm text-white/80">
             Experiencia & Logros
           </div>
 
-          <h2 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+          <h2 className="mt-4 sm:mt-6 text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.05] tracking-tight text-white lg:text-[56px]">
             Trayectoria académica y <span className="text-white/55">proyectos personales</span>
           </h2>
 
-          <p className="mt-6 max-w-[48ch] text-base leading-relaxed text-white/70 sm:text-lg">
+          <p className="mt-4 sm:mt-6 max-w-[48ch] text-sm sm:text-base lg:text-lg leading-relaxed text-white/70">
             Experiencia académica y proyectos personales donde he aprendido y crecido como desarrollador.
           </p>
         </motion.div>
 
         {/* Layout */}
-        <div className="mt-16 grid gap-14 lg:grid-cols-12 lg:items-start">
+        <div className="mt-12 sm:mt-16 grid gap-8 sm:gap-12 lg:gap-14 lg:grid-cols-12 lg:items-start">
           {/* LEFT: Timeline */}
           <div className="lg:col-span-5">
-            <div className="flex items-center gap-2 text-sm text-white/70">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
               <Briefcase size={16} />
               <span>Trayectoria</span>
             </div>
 
-            <div className="mt-6 relative pl-8">
+            <div className="mt-6 relative pl-6 sm:pl-8">
               {/* Línea vertical */}
-              <div className="absolute left-3 top-2 h-full w-px bg-white/10" />
+              <div className="absolute left-2 sm:left-3 top-2 h-full w-px bg-white/10" />
 
-              <div className="grid gap-6">
+              <div className="grid gap-4 sm:gap-6">
                 {experience.map((e, idx) => (
                   <motion.div
                     key={`${e.role}-${idx}`}
@@ -70,37 +72,37 @@ export default function Experience() {
                   >
                     <motion.div
                       whileHover={{ y: -6 }}
-                      className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] sm:p-8"
+                      className="rounded-2xl sm:rounded-3xl border border-black/10 bg-white p-4 sm:p-6 lg:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
                     >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <p className="text-lg font-semibold text-black">{e.role}</p>
-                          <p className="mt-1 text-sm text-black/65">
+                          <p className="text-base sm:text-lg font-semibold text-black">{e.role}</p>
+                          <p className="mt-1 text-xs sm:text-sm text-black/65">
                             {e.company}
                             {e.location ? ` • ${e.location}` : ""}
                           </p>
                         </div>
 
-                        <span className="w-fit rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs text-black/70">
+                        <span className="w-fit rounded-full border border-black/10 bg-black/5 px-2.5 sm:px-3 py-1 text-xs text-black/70 shrink-0">
                           {e.period}
                         </span>
                       </div>
 
-                      <ul className="mt-4 space-y-2 text-sm text-black/70">
+                      <ul className="mt-3 sm:mt-4 space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-black/70">
                         {e.bullets.map((b, i) => (
                           <li key={i} className="flex gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+                            <span className="mt-1.5 h-1 w-1 sm:mt-2 sm:h-1.5 sm:w-1.5 shrink-0 rounded-full bg-black" />
                             <span>{b}</span>
                           </li>
                         ))}
                       </ul>
 
                       {e.tech?.length ? (
-                        <div className="mt-4 flex flex-wrap gap-2">
+                        <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
                           {e.tech.map((t) => (
                             <span
                               key={t}
-                              className="rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs text-black/70"
+                              className="rounded-full border border-black/10 bg-black/5 px-2.5 sm:px-3 py-0.5 sm:py-1 text-xs text-black/70"
                             >
                               {t}
                             </span>
@@ -114,10 +116,10 @@ export default function Experience() {
             </div>
           </div>
 
-          
+          {/* RIGHT: Achievements */}
           <div className="lg:col-span-7">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-sm text-white/70">
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-white/70">
                 <Award size={16} />
                 <span>Certificados / Logros</span>
               </div>
@@ -129,8 +131,7 @@ export default function Experience() {
 
             <div className="mt-6">
               {hasAchievements ? (
-                
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                   {achievements.map((a, idx) => (
                     <motion.button
                       key={`${a.title}-${idx}`}
@@ -141,9 +142,8 @@ export default function Experience() {
                       transition={{ duration: 0.22, delay: idx * 0.02 }}
                       whileHover={{ y: -3 }}
                       onClick={() => setActive(a)}
-                      className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_18px_55px_rgba(0,0,0,0.22)] text-left"
+                      className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-black/10 bg-white shadow-[0_18px_55px_rgba(0,0,0,0.22)] text-left"
                     >
-                      {/* ✅ Imagen un poquito más compacta */}
                       <div className="aspect-[16/11] w-full bg-black/10">
                         {a.image ? (
                           <img
@@ -154,17 +154,16 @@ export default function Experience() {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <div className="rounded-xl border border-black/10 bg-black/5 px-3 py-2 text-[11px] text-black/70">
+                            <div className="rounded-lg border border-black/10 bg-black/5 px-2 py-1 text-[10px] sm:text-[11px] text-black/70">
                               Sin imagen
                             </div>
                           </div>
                         )}
                       </div>
 
-                      {/* ✅ Footer más chico */}
-                      <div className="p-4">
-                        <p className="line-clamp-1 text-[13px] font-semibold text-black">{a.title}</p>
-                        <p className="mt-1 line-clamp-1 text-[11px] text-black/60">
+                      <div className="p-3 sm:p-4">
+                        <p className="line-clamp-1 text-[12px] sm:text-[13px] font-semibold text-black">{a.title}</p>
+                        <p className="mt-0.5 line-clamp-1 text-[10px] sm:text-[11px] text-black/60">
                           {a.issuer ? a.issuer : "Certificado"} {a.date ? `• ${a.date}` : ""}
                         </p>
                       </div>
@@ -172,8 +171,8 @@ export default function Experience() {
                       {/* overlay */}
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100">
                         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/0 to-black/0" />
-                        <div className="absolute bottom-3 right-3 rounded-full border border-black/15 bg-white/90 p-2 backdrop-blur">
-                          <ExternalLink size={14} className="text-black/80" />
+                        <div className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 rounded-full border border-black/15 bg-white/90 p-1.5 sm:p-2 backdrop-blur">
+                          <ExternalLink size={12} className="text-black/80 sm:w-3.5 sm:h-3.5" />
                         </div>
                       </div>
                     </motion.button>
@@ -185,10 +184,10 @@ export default function Experience() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-120px" }}
                   transition={{ duration: 0.35 }}
-                  className="rounded-3xl border border-white/10 bg-white/5 px-6 py-8"
+                  className="rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 px-4 sm:px-6 py-6 sm:py-8"
                 >
-                  <p className="text-sm text-white/70">Aquí van tus certificados 👇</p>
-                  <p className="mt-2 text-sm text-white/70">
+                  <p className="text-xs sm:text-sm text-white/70">Aquí van tus certificados 👇</p>
+                  <p className="mt-2 text-xs sm:text-sm text-white/70">
                     Cuando los tengas, agregás items en <span className="text-white">data/experience.ts</span> con
                     <span className="text-white"> title, issuer, date, image</span> (y opcional{" "}
                     <span className="text-white">href</span>).
@@ -204,10 +203,11 @@ export default function Experience() {
         </div>
       </Container>
 
+      {/* Modal */}
       <AnimatePresence>
         {active ? (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center px-4"
+            className="fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -220,12 +220,12 @@ export default function Experience() {
               animate={{ y: 0, opacity: 1, scale: 1 }}
               exit={{ y: 10, opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="relative z-10 w-full max-w-4xl overflow-hidden rounded-3xl border border-black/10 bg-white"
+              className="relative z-10 w-full max-w-2xl sm:max-w-4xl overflow-hidden rounded-2xl sm:rounded-3xl border border-black/10 bg-white"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between gap-3 border-b border-black/10 bg-white px-5 py-4">
+              <div className="flex items-center justify-between gap-3 border-b border-black/10 bg-white px-4 sm:px-5 py-3 sm:py-4">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-black">{active.title}</p>
+                  <p className="truncate text-xs sm:text-sm font-semibold text-black">{active.title}</p>
                   <p className="truncate text-xs text-black/60">
                     {active.issuer ? active.issuer : "Certificado"} {active.date ? `• ${active.date}` : ""}
                   </p>
@@ -234,9 +234,9 @@ export default function Experience() {
                 <button
                   type="button"
                   onClick={() => setActive(null)}
-                  className="rounded-full border border-black/10 bg-black/5 p-2 text-black/80 hover:bg-black/10"
+                  className="rounded-full border border-black/10 bg-black/5 p-1.5 sm:p-2 text-black/80 hover:bg-black/10 shrink-0"
                 >
-                  <X size={18} />
+                  <X size={16} className="sm:w-5 sm:h-5" />
                 </button>
               </div>
 
@@ -245,23 +245,23 @@ export default function Experience() {
                   <img
                     src={active.image || "/placeholder.svg"}
                     alt={active.title}
-                    className="max-h-[75vh] w-full object-contain"
+                    className="max-h-[60vh] sm:max-h-[75vh] w-full object-contain"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex h-[50vh] items-center justify-center text-black/70">
+                  <div className="flex h-[40vh] sm:h-[50vh] items-center justify-center text-black/70 text-sm">
                     No hay imagen cargada todavía.
                   </div>
                 )}
               </div>
 
               {active.href ? (
-                <div className="flex items-center justify-end gap-2 border-t border-black/10 bg-white/50 px-5 py-3">
+                <div className="flex items-center justify-end gap-2 border-t border-black/10 bg-white/50 px-4 sm:px-5 py-2 sm:py-3">
                   <a
                     href={active.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 text-xs text-black/80 hover:bg-black/10"
+                    className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-black/10 bg-black/5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-black/80 hover:bg-black/10"
                   >
                     Ver enlace <ExternalLink size={14} />
                   </a>

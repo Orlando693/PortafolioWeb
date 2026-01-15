@@ -1,27 +1,24 @@
-"use client";
+"use client"
 
-import Container from "../../components/ui/Container";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { Download, Mail } from "lucide-react";
-import { TypeAnimation } from "react-type-animation";
+import Container from "../../components/ui/Container"
+import Image from "next/image"
+import { motion } from "framer-motion"
+import { Download, Mail } from "lucide-react"
+import { TypeAnimation } from "react-type-animation"
 
 export default function Hero() {
   return (
     <section
       id="inicio"
-      className="relative bg-black flex min-h-screen items-center pt-32 pb-24"
+      className="relative bg-black flex min-h-screen items-center pt-12 sm:pt-20 md:pt-32 pb-12 sm:pb-16 md:pb-24"
     >
       {/* Opaco/aurora SOLO en Hero */}
-      <div className="pointer-events-none absolute inset-0">
-        
-      </div>
+      <div className="pointer-events-none absolute inset-0"></div>
 
-      {/* ✅ Degradé que mezcla con el negro del About */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-56 bg-gradient-to-b from-transparent via-black/70 to-black" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 sm:h-48 md:h-56 bg-gradient-to-b from-transparent via-black/70 to-black" />
 
       <Container>
-        <div className="relative grid items-center gap-10 lg:grid-cols-2">
+        <div className="relative grid items-center gap-8 sm:gap-10 lg:grid-cols-2">
           {/* Left */}
           <div>
             <motion.div
@@ -37,7 +34,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className="mt-5 text-5xl font-extrabold tracking-tight text-white sm:text-7xl"
+              className="mt-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white"
             >
               Hola, soy <span className="text-white/60">Orlando</span>
             </motion.h1>
@@ -46,7 +43,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.08 }}
-              className="mt-3 min-h-[28px] text-base font-semibold text-white/70 sm:text-lg"
+              className="mt-3 min-h-[28px] text-base sm:text-lg font-semibold text-white/70"
             >
               <TypeAnimation
                 sequence={[
@@ -69,7 +66,7 @@ export default function Hero() {
                 ]}
                 speed={50}
                 deletionSpeed={70}
-                repeat={Infinity}
+                repeat={Number.POSITIVE_INFINITY}
                 cursor
                 wrapper="span"
                 className="text-white/80"
@@ -80,22 +77,21 @@ export default function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="mt-5 max-w-xl text-white/70"
+              className="mt-5 max-w-xl text-white/70 text-sm sm:text-base"
             >
-              Soy estudiante de Ingeniería en Informática y desarrollador web. Me
-              apasiona crear interfaces modernas, aprender tecnologías nuevas y
-              convertir ideas en proyectos reales.
+              Soy estudiante de Ingeniería en Informática y desarrollador web. Me apasiona crear interfaces modernas,
+              aprender tecnologías nuevas y convertir ideas en proyectos reales.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.15 }}
-              className="mt-7 flex flex-wrap items-center gap-3"
+              className="mt-7 flex flex-col sm:flex-row flex-wrap items-center gap-3"
             >
               <a
                 href="#contacto"
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white hover:border-white/25 hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white hover:border-white/25 hover:bg-white/10"
               >
                 <Mail className="h-4 w-4" />
                 Contactarme
@@ -104,7 +100,7 @@ export default function Hero() {
               <a
                 href="/CV%20-%20Moreno%20Cors%20Orlando%20Sebastian.pdf"
                 download="CV-Moreno-Cors-Orlando-Sebastian.pdf"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black hover:opacity-90"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black hover:opacity-90"
               >
                 <Download className="h-4 w-4" />
                 Descargar CV
@@ -131,7 +127,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.05 }}
-            className="mx-auto w-full max-w-md"
+            className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-none"
           >
             <div className="relative rounded-[2rem] border border-white/10 bg-white/5 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
               <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black">
@@ -141,7 +137,7 @@ export default function Hero() {
                   width={900}
                   height={900}
                   priority
-                  className="h-[420px] w-full object-cover"
+                  className="h-[300px] sm:h-[380px] lg:h-[420px] w-full object-cover"
                 />
               </div>
             </div>
@@ -149,5 +145,5 @@ export default function Hero() {
         </div>
       </Container>
     </section>
-  );
+  )
 }
