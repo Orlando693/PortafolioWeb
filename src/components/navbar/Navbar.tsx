@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { motion } from "framer-motion"
-import { Home, User, Wrench, FolderGit2, Mail } from "lucide-react"
+import { Home, User, Wrench, FolderGit2, Mail, Briefcase } from "lucide-react"
 
 type NavItem = {
   id: string
@@ -16,13 +16,21 @@ const NAV: NavItem[] = [
   { id: "inicio", label: "Inicio", icon: Home },
   { id: "acerca", label: "Acerca", icon: User },
   { id: "habilidades", label: "Habilidades", icon: Wrench },
+  { id: "experiencia", label: "Experiencia", icon: Briefcase },
   { id: "proyectos", label: "Proyectos", icon: FolderGit2 },
   { id: "contacto", label: "Contacto", icon: Mail },
 ]
 
 export default function Navbar() {
   const [active, setActive] = useState<string>("inicio")
+  const activeRef = useRef(active)
   const [elevated, setElevated] = useState(false)
+  const scrollLock = useRef(false)
+  const scrollReleaseRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
 
   const ids = useMemo(() => NAV.map((n) => n.id), [])
 
@@ -38,8 +46,6 @@ export default function Navbar() {
 
     if (!sections.length) return
 
-    const NAV_OFFSET = 140
-
     const setFromHash = () => {
       const raw = window.location.hash.replace("#", "")
       const id = decodeURIComponent(raw)
@@ -51,13 +57,14 @@ export default function Navbar() {
       ticking = false
 
       let current = sections[0]?.id ?? "inicio"
-      let best = Number.POSITIVE_INFINITY
+      let best = Number.NEGATIVE_INFINITY
 
       for (const el of sections) {
         const rect = el.getBoundingClientRect()
-        const dist = Math.abs(rect.top - NAV_OFFSET)
-        if (dist < best) {
-          best = dist
+        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
+        const score = visibleHeight - Math.abs(rect.top + rect.height / 2 - window.innerHeight / 2)
+        if (score > best) {
+          best = score
           current = el.id
         }
       }
@@ -82,8 +89,8 @@ export default function Navbar() {
       },
       {
         root: null,
-        rootMargin: `-${NAV_OFFSET}px 0px -55% 0px`,
-        threshold: [0.15, 0.3, 0.5],
+        rootMargin: "-45% 0px -45% 0px",
+        threshold: [0.4, 0.6, 0.8],
       },
     )
 
@@ -102,36 +109,109 @@ export default function Navbar() {
     }
   }, [ids])
 
+  useEffect(() => {
+    let scrollTimeout: number | null = null
+
+    const onWheel = (e: WheelEvent) => {
+      // Bloquear scroll lateral o zoom con Ctrl
+      if (e.ctrlKey) return
+
+      // Prevenir el comportamiento por defecto siempre
+      // Esto convierte el scroll en un disparador de eventos
+      e.preventDefault()
+
+      // Si estamos bloqueados (animando), salimos
+      if (scrollLock.current) return
+
+      // Detectar pequeña intención de scroll para evitar disparos accidentales
+      // Sensibilidad ajustada
+      if (Math.abs(e.deltaY) < 15) return
+
+      // Determinar dirección
+      const dir = e.deltaY > 0 ? 1 : -1
+
+      // Calcular la sección activa VISUALMENTE 
+      // (no depender del estado React que puede tener lag)
+      let currentIndex = 0
+      let minDistance = Number.MAX_VALUE
+      const viewportCenter = window.innerHeight / 2
+
+      // Buscar qué sección está más cerca del centro de la pantalla
+      const currentSections = ids.map(id => document.getElementById(id))
+      currentSections.forEach((el, idx) => {
+        if (!el) return
+        const rect = el.getBoundingClientRect()
+        // Centro de la sección relativo al viewport
+        const elementCenter = rect.top + (rect.height / 2)
+        // Distancia absoluta al centro del viewport
+        const distance = Math.abs(elementCenter - viewportCenter)
+        
+        if (distance < minDistance) {
+          minDistance = distance
+          currentIndex = idx
+        }
+      })
+
+      // Calcular siguiente índice
+      const nextIndex = Math.min(Math.max(currentIndex + dir, 0), ids.length - 1)
+
+      // Si el índice cambia, ejecutamos el scroll
+      if (nextIndex !== currentIndex) {
+        scrollLock.current = true
+        const targetId = ids[nextIndex]
+        
+        scrollToSection(targetId)
+
+        // Bloqueo temporal para permitir que termine la animación
+        if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)
+        scrollReleaseRef.current = window.setTimeout(() => {
+          scrollLock.current = false
+        }, 800) // 800ms de espera entre scrolls hace que se sienta responsive pero controlado
+      }
+    }
+
+    // Usar passive: false es CRÍTICO para poder usar preventDefault
+    window.addEventListener("wheel", onWheel, { passive: false })
+    
+    return () => {
+      window.removeEventListener("wheel", onWheel as EventListener)
+      if (scrollReleaseRef.current) window.clearTimeout(scrollReleaseRef.current)
+      if (scrollTimeout) window.clearTimeout(scrollTimeout)
+    }
+  }, [ids])
+
   const activeIndex = Math.max(
     0,
     NAV.findIndex((n) => n.id === active),
   )
 
-  function goTo(id: string) {
+  function scrollToSection(id: string) {
     const el = document.getElementById(id)
     if (!el) return
 
     setActive(id)
     history.replaceState(null, "", `#${id}`)
-    el.scrollIntoView({ behavior: "smooth", block: "start" })
+    el.scrollIntoView({ behavior: "smooth", block: "center" })
   }
 
   return (
-    <div className="fixed left-0 right-0 top-4 z-50 flex justify-center px-4">
+    <div className="fixed left-0 right-0 top-3 z-50 flex justify-center px-3">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35 }}
         className={[
-          "relative w-full max-w-3xl rounded-3xl border",
-          "bg-black/40 backdrop-blur-xl transition-all duration-300",
+          "relative w-full max-w-4xl overflow-hidden rounded-[18px] border",
+          "bg-white transition-all duration-300",
           elevated
-            ? "border-white/20 shadow-[0_20px_70px_rgba(0,0,0,0.6)]"
-            : "border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.4)]",
+            ? "border-black/10 shadow-[0_14px_45px_rgba(0,0,0,0.16)]"
+            : "border-black/5 shadow-[0_8px_24px_rgba(0,0,0,0.12)]",
         ].join(" ")}
       >
+        <div className="pointer-events-none absolute inset-0" />
+
         <motion.div
-          className="absolute top-2 h-12 rounded-2xl bg-white/15"
+          className="absolute top-1.5 h-11 rounded-xl bg-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.12)]"
           initial={false}
           animate={{
             left: `${(100 / NAV.length) * activeIndex}%`,
@@ -140,7 +220,7 @@ export default function Navbar() {
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
         />
 
-        <nav className="relative flex items-center justify-between px-2 py-2">
+        <nav className="relative flex items-center justify-between gap-1 px-2.5 py-2">
           {NAV.map((item) => {
             const Icon = item.icon
             const isActive = item.id === active
@@ -148,13 +228,13 @@ export default function Navbar() {
             return (
               <motion.button
                 key={item.id}
-                onClick={() => goTo(item.id)}
+                onClick={() => scrollToSection(item.id)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
                 className={[
-                  "relative flex flex-1 items-center justify-center gap-2 rounded-2xl px-3 py-3",
-                  "text-sm transition-colors",
-                  isActive ? "text-white" : "text-white/60 hover:text-white/90",
+                  "relative flex flex-1 items-center justify-center gap-2 rounded-xl px-2.5 py-2",
+                  "text-sm font-semibold tracking-tight transition-colors",
+                  isActive ? "text-black" : "text-black/50 hover:text-black/80",
                 ].join(" ")}
                 aria-current={isActive ? "page" : undefined}
               >

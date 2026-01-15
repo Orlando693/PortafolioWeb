@@ -114,7 +114,7 @@ export default function Experience() {
             </div>
           </div>
 
-          {/* RIGHT: Achievements / Certs */}
+          
           <div className="lg:col-span-7">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-sm text-white/70">
@@ -129,7 +129,8 @@ export default function Experience() {
 
             <div className="mt-6">
               {hasAchievements ? (
-                <div className="grid gap-8 2xl:grid-cols-2">
+                
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3 2xl:grid-cols-3">
                   {achievements.map((a, idx) => (
                     <motion.button
                       key={`${a.title}-${idx}`}
@@ -137,13 +138,13 @@ export default function Experience() {
                       initial={{ opacity: 0, y: 10 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-120px" }}
-                      transition={{ duration: 0.28, delay: idx * 0.03 }}
-                      whileHover={{ y: -6 }}
+                      transition={{ duration: 0.22, delay: idx * 0.02 }}
+                      whileHover={{ y: -3 }}
                       onClick={() => setActive(a)}
-                      className="group relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-[0_30px_80px_rgba(0,0,0,0.35)] text-left"
+                      className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_18px_55px_rgba(0,0,0,0.22)] text-left"
                     >
-                      {/* Imagen o placeholder */}
-                      <div className="aspect-[4/3] w-full bg-black/10">
+                      {/* ✅ Imagen un poquito más compacta */}
+                      <div className="aspect-[16/11] w-full bg-black/10">
                         {a.image ? (
                           <img
                             src={a.image || "/placeholder.svg"}
@@ -153,25 +154,25 @@ export default function Experience() {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <div className="rounded-2xl border border-black/10 bg-black/5 px-4 py-3 text-xs text-black/70">
-                              Sin imagen (placeholder)
+                            <div className="rounded-xl border border-black/10 bg-black/5 px-3 py-2 text-[11px] text-black/70">
+                              Sin imagen
                             </div>
                           </div>
                         )}
                       </div>
 
-                      {/* Footer */}
-                      <div className="p-6">
-                        <p className="line-clamp-1 text-sm font-semibold text-black">{a.title}</p>
-                        <p className="mt-1 line-clamp-1 text-xs text-black/60">
+                      {/* ✅ Footer más chico */}
+                      <div className="p-4">
+                        <p className="line-clamp-1 text-[13px] font-semibold text-black">{a.title}</p>
+                        <p className="mt-1 line-clamp-1 text-[11px] text-black/60">
                           {a.issuer ? a.issuer : "Certificado"} {a.date ? `• ${a.date}` : ""}
                         </p>
                       </div>
 
                       {/* overlay */}
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100">
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/0 to-black/0" />
-                        <div className="absolute bottom-4 right-4 rounded-full border border-black/15 bg-white/90 p-2 backdrop-blur">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/0 to-black/0" />
+                        <div className="absolute bottom-3 right-3 rounded-full border border-black/15 bg-white/90 p-2 backdrop-blur">
                           <ExternalLink size={14} className="text-black/80" />
                         </div>
                       </div>

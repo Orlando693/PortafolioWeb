@@ -37,7 +37,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className="mt-5 text-5xl font-extrabold tracking-tight text-white sm:text-6xl"
+              className="mt-5 text-5xl font-extrabold tracking-tight text-white sm:text-7xl"
             >
               Hola, soy <span className="text-white/60">Orlando</span>
             </motion.h1>
@@ -102,8 +102,8 @@ export default function Hero() {
               </a>
 
               <a
-                href="/CV - Moreno Cors Orlando Sebastian.pdf"
-                download
+                href="/CV%20-%20Moreno%20Cors%20Orlando%20Sebastian.pdf"
+                download="CV-Moreno-Cors-Orlando-Sebastian.pdf"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black hover:opacity-90"
               >
                 <Download className="h-4 w-4" />

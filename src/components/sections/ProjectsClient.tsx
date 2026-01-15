@@ -3,7 +3,7 @@
 import type { GithubRepo } from "../../lib/github"
 import Container from "../../components/ui/Container"
 import { motion } from "framer-motion"
-import { ExternalLink, Github, GitFork, Search, Star, X } from "lucide-react"
+import { ExternalLink, Github, GitFork, Search, Star, X, ChevronDown, ChevronUp } from "lucide-react"
 import { useDeferredValue, useEffect, useMemo, useState } from "react"
 
 type Props = {
@@ -18,12 +18,15 @@ function formatDate(iso: string) {
 
 export default function ProjectsClient({ repos, pinnedNames }: Props) {
   const [q, setQ] = useState("")
-  const deferredQ = useDeferredValue(q) // ✅ evita “lag” al teclear
+  const deferredQ = useDeferredValue(q)
   const [lang, setLang] = useState<string>("Todos")
 
-  // ✅ para que no sea infinito hacia abajo
+  // ✅ para no renderizar una lista gigante
   const PAGE_SIZE = 10
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+
+  // ✅ colapsar destacados para ahorrar altura
+  const [showPinned, setShowPinned] = useState(true)
 
   const languages = useMemo(() => {
     const set = new Set<string>()
@@ -53,13 +56,12 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
       })
   }, [repos, pinnedNames, deferredQ, lang])
 
-  // ✅ cuando cambias filtro/búsqueda, resetea el “paginado”
+  // ✅ cuando cambias filtro/búsqueda, resetea el paginado
   useEffect(() => {
     setVisibleCount(PAGE_SIZE)
   }, [deferredQ, lang])
 
   const visibleRest = useMemo(() => filteredRest.slice(0, visibleCount), [filteredRest, visibleCount])
-
   const canLoadMore = filteredRest.length > visibleCount
 
   return (
@@ -85,131 +87,137 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
             Estos proyectos se cargan automáticamente desde mi GitHub. Código, lenguajes, updates y estadísticas.
           </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.35, delay: 0.05 }}
-            className="mt-7 rounded-3xl border border-white/10 bg-white/5 px-6 py-5"
-          >
-            <p className="text-sm text-white/70">
-              Tip: La lista “Todos” tiene scroll interno para que tu web no se haga larguísima.
-            </p>
-          </motion.div>
+          
+           
         </motion.div>
 
         {/* RIGHT */}
         <div className="lg:col-span-8">
-          {/* Filters */}
-          <div className="mb-8 flex flex-col gap-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative w-full sm:max-w-md">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
-                <input
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                  placeholder="Buscar por nombre o descripción..."
-                  autoComplete="off"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-10 text-white outline-none placeholder:text-white/40 focus:border-white/25"
-                />
+          {/* ✅ Panel compacto (evita que la página crezca infinito) */}
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
+            {/* Header (filtros) */}
+            <div className="border-b border-white/10 bg-black/20 px-5 py-5 sm:px-7">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {/* Search */}
+                <div className="relative w-full sm:max-w-md">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/60" />
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Buscar por nombre o descripción..."
+                    autoComplete="off"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 py-3 pl-10 pr-10 text-white outline-none placeholder:text-white/40 focus:border-white/25"
+                  />
 
-                {q.trim().length > 0 && (
+                  {q.trim().length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setQ("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-white/5 p-1 text-white/70 hover:bg-white/10"
+                      aria-label="Limpiar búsqueda"
+                      title="Limpiar"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Language */}
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-white/70">Lenguaje:</span>
+                  <select
+                    value={lang}
+                    onChange={(e) => setLang(e.target.value)}
+                    className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/25"
+                  >
+                    {languages.map((l) => (
+                      <option key={l} value={l} className="bg-zinc-900">
+                        {l}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* contador + reset */}
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-white/55">
+                <span>
+                  Mostrando <span className="text-white/80">{Math.min(visibleCount, filteredRest.length)}</span> de{" "}
+                  <span className="text-white/80">{filteredRest.length}</span> resultados
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQ("")
+                    setLang("Todos")
+                  }}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 hover:bg-white/10"
+                >
+                  Reset filtros
+                </button>
+              </div>
+            </div>
+
+            {/* ✅ Scroll interno (aquí adentro va TODO: destacados + lista) */}
+            <div className="max-h-[72vh] overflow-auto px-5 py-6 sm:px-7">
+              {/* Pinned */}
+              {pinned.length > 0 && (
+                <div className="mb-6">
                   <button
                     type="button"
-                    onClick={() => setQ("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-white/5 p-1 text-white/70 hover:bg-white/10"
-                    aria-label="Limpiar búsqueda"
-                    title="Limpiar"
+                    onClick={() => setShowPinned((s) => !s)}
+                    className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 hover:bg-white/10"
                   >
-                    <X className="h-4 w-4" />
+                    Destacados ({pinned.length}) {showPinned ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </button>
+
+                  {showPinned && (
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {pinned.map((repo) => (
+                        <ProjectCard key={repo.id} repo={repo} featured />
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-6 h-px w-full bg-white/10" />
+                </div>
+              )}
+
+              {/* Todos */}
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-white">Todos</h3>
+                {canLoadMore && (
+                  <span className="text-xs text-white/55">
+                    (Cargados {visibleRest.length} / {filteredRest.length})
+                  </span>
                 )}
               </div>
 
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-white/70">Lenguaje:</span>
-                <select
-                  value={lang}
-                  onChange={(e) => setLang(e.target.value)}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-white/25"
+              {filteredRest.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.35 }}
+                  className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70"
                 >
-                  {languages.map((l) => (
-                    <option key={l} value={l} className="bg-zinc-900">
-                      {l}
-                    </option>
+                  No hay resultados con esos filtros.
+                </motion.div>
+              ) : (
+                <div className="mt-4 grid gap-4">
+                  {visibleRest.map((repo) => (
+                    <ProjectCard key={repo.id} repo={repo} />
                   ))}
-                </select>
-              </div>
-            </div>
-
-            {/* contador */}
-            <div className="flex items-center justify-between text-xs text-white/55">
-              <span>
-                Mostrando <span className="text-white/80">{Math.min(visibleCount, filteredRest.length)}</span> de{" "}
-                <span className="text-white/80">{filteredRest.length}</span> resultados
-              </span>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setQ("")
-                  setLang("Todos")
-                }}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 hover:bg-white/10"
-              >
-                Reset filtros
-              </button>
-            </div>
-          </div>
-
-          {/* Pinned */}
-          {pinned.length > 0 && (
-            <div className="mb-8 flex flex-col gap-4">
-              <h3 className="text-lg font-semibold text-white">Destacados</h3>
-
-              <div className="grid gap-4">
-                {pinned.map((repo) => (
-                  <ProjectCard key={repo.id} repo={repo} featured />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Todos */}
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-white">Todos</h3>
-              {canLoadMore && (
-                <span className="text-xs text-white/55">
-                  (Cargados {visibleRest.length} / {filteredRest.length})
-                </span>
+                </div>
               )}
             </div>
 
-            {filteredRest.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.35 }}
-                className="rounded-2xl border border-white/10 bg-white/5 p-6 text-white/70"
-              >
-                No hay resultados con esos filtros.
-              </motion.div>
-            ) : (
-              <>
-                {/* ✅ Scroll interno para que no se haga infinito hacia abajo */}
-                <div className="max-h-[70vh] overflow-auto pr-2">
-                  <div className="grid gap-4">
-                    {visibleRest.map((repo) => (
-                      <ProjectCard key={repo.id} repo={repo} />
-                    ))}
-                  </div>
-                </div>
-
-                {/* ✅ Load more */}
+            {/* Footer (Load more) */}
+            <div className="border-t border-white/10 bg-black/20 px-5 py-4 sm:px-7">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap gap-3">
-                  {canLoadMore ? (
+                  {filteredRest.length > 0 && canLoadMore ? (
                     <button
                       type="button"
                       onClick={() => setVisibleCount((v) => Math.min(v + PAGE_SIZE, filteredRest.length))}
@@ -218,7 +226,9 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
                       Cargar más
                     </button>
                   ) : (
-                    <span className="text-xs text-white/55">Ya estás viendo todo lo filtrado.</span>
+                    <span className="text-xs text-white/55">
+                      {filteredRest.length === 0 ? "—" : ""}
+                    </span>
                   )}
 
                   {filteredRest.length > PAGE_SIZE && (
@@ -231,8 +241,10 @@ export default function ProjectsClient({ repos, pinnedNames }: Props) {
                     </button>
                   )}
                 </div>
-              </>
-            )}
+
+              
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -39,7 +39,7 @@ const SKILLS: Skill[] = [
 ]
 
 const CATEGORIES = [
-  { key: "Todos" as const, label: "Todos", icon: Sparkles },
+  { key: "Todos" as const, label: "Todos", icon: null },
   { key: "Frontend" as const, label: "Frontend", icon: Braces },
   { key: "Backend" as const, label: "Backend", icon: Server },
   { key: "DB & Tools" as const, label: "BD & Herramientas", icon: Database },
@@ -124,7 +124,7 @@ export default function TechStack() {
 
           {/* RIGHT */}
           <div className="lg:col-span-7 lg:col-start-6">
-            {/* ✅ sticky para que se vea pro y no “flote” raro */}
+            
             <div className="lg:sticky lg:top-28">
               {/* Tabs */}
               <div className="flex flex-wrap gap-2">
@@ -144,7 +144,7 @@ export default function TechStack() {
                           : "border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:bg-white/10",
                       ].join(" ")}
                     >
-                      <Icon className="h-4 w-4" />
+                      {Icon && <Icon className="h-4 w-4" />}
                       {c.label}
                     </motion.button>
                   )
